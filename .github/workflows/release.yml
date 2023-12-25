@@ -1,0 +1,16 @@
+name: Release
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  release:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: docker build . -f faisal135711/nest-app
+      - run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password stdin
+      - run: docker push faisal135711/nest-app

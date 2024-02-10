@@ -1,0 +1,13 @@
+name: Print My Full Name
+on: workflow_dispatch
+jobs:
+  print-firstname:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Faisal
+        run: echo "Faisal"
+  print-lastname:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Ahmed
+        run: echo "Ahmed"

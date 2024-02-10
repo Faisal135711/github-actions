@@ -5,7 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print Faisal
-        run: echo "Faisal"
+        run: | 
+          echo "Faisal"
+          echo "-----------"
   print-lastname:
     runs-on: ubuntu-latest
     steps:

@@ -1,4 +1,4 @@
-name: Using Reuseable Workflow
+name: Deployment
 on:
   push:
     branches:
@@ -9,15 +9,8 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v3
-      - name: Cache dependencies
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+      - name: Load and cache dependencies
+        uses: ./.github/.actions/cached-deps
       - name: Lint code
         run: npm run lint
   test:
@@ -59,7 +52,6 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Build website
-        id: build-website
         run: npm run build
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
@@ -68,13 +60,16 @@ jobs:
           path: dist
   deploy:
     needs: build
-    uses: ./.github/workflows/reuseable.yml
-  report:
-    needs: [lint, deploy]
-    if: failure()
     runs-on: ubuntu-latest
     steps:
-      - name: Output information
-        run: |
-          echo "Something went wrong"
-          echo "${{ github }}"
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Get build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-files
+          path: ./dist
+      - name: Output contents
+        run: ls
+      - name: Deploy site
+        run: echo "Deploying..."
